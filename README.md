@@ -77,6 +77,65 @@ mysql -uroot -h 127.0.0.1 -P3306 -p1234  --local-infile < load_tbl_to_mysql.sql
 
 * http://www.tpc.org/tpc_documents_current_versions/pdf/tpc-h_v2.17.3.pdf
 
+```sql
+-- Q1 ##############################################################################
+SELECT l_returnflag, 
+       l_linestatus, 
+       SUM(l_quantity)                                           AS sum_qty, 
+       SUM(l_extendedprice)                                      AS 
+       sum_base_price, 
+       SUM(l_extendedprice * ( 1 - l_discount ))                 AS 
+       sum_disc_price, 
+       SUM(l_extendedprice * ( 1 - l_discount ) * ( 1 + l_tax )) AS sum_charge, 
+       Avg(l_quantity)                                           AS avg_qty, 
+       Avg(l_extendedprice)                                      AS avg_price, 
+       Avg(l_discount)                                           AS avg_disc, 
+       Count(*)                                                  AS count_order 
+FROM   lineitem 
+WHERE  l_shipdate <= DATE '1998-12-01' - interval '90' day 
+GROUP  BY l_returnflag, 
+          l_linestatus 
+ORDER  BY l_returnflag, 
+          l_linestatus; 
+
+-- Q2 ################################################################################
+SELECT s_acctbal, 
+       s_name, 
+       n_name, 
+       p_partkey, 
+       p_mfgr, 
+       s_address, 
+       s_phone, 
+       s_comment 
+FROM   part, 
+       supplier, 
+       partsupp, 
+       nation, 
+       region 
+WHERE  p_partkey = ps_partkey 
+       AND s_suppkey = ps_suppkey 
+       AND p_size = 15 
+       AND p_type LIKE '%BRASS' 
+       AND s_nationkey = n_nationkey 
+       AND n_regionkey = r_regionkey 
+       AND r_name = 'EUROPE' 
+       AND ps_supplycost = (SELECT Min(ps_supplycost) 
+                            FROM   partsupp, 
+                                   supplier, 
+                                   nation, 
+                                   region 
+                            WHERE  p_partkey = ps_partkey 
+                                   AND s_suppkey = ps_suppkey 
+                                   AND s_nationkey = n_nationkey 
+                                   AND n_regionkey = r_regionkey 
+                                   AND r_name = 'EUROPE') 
+ORDER  BY s_acctbal DESC, 
+          n_name, 
+          s_name, 
+          p_partkey 
+LIMIT  100; 
+```
+
 
 ### Environment
 
