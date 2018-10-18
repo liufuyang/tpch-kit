@@ -36,7 +36,7 @@ Then run the following commands to clone the repo and build the tools:
 ```
 git clone https://github.com/gregrahn/tpch-kit.git
 cd tpch-kit/dbgen
-make MACHINE=LINUX DATABASE=POSTGRESQL
+make MACHINE=LINUX DATABASE=SQLSERVER
 ```
 
 ### macOS
@@ -52,10 +52,24 @@ Then run the following commands to clone the repo and build the tools:
 ```
 git clone https://github.com/gregrahn/tpch-kit.git
 cd tpch-kit/dbgen
-make MACHINE=MACOS DATABASE=POSTGRESQL
+make MACHINE=MACOS DATABASE=SQLSERVER
 ```
 
 ## Using the TPC-H tools
+
+### Generate databases
+```
+./dbgen -s 0.1
+
+ls *.tbl
+
+# if your mysql is started by docker: $ docker run --rm -d --name mysql -p 3306:3306 -e MYSQL_ROOT_PASSWORD=1234 mysql
+# docker exec -it mysql mysql -uroot -p1234
+# ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '1234';
+mysql -uroot -h 127.0.0.1 -P3306 -p1234  --local-infile < load_tbl_to_mysql.sql
+
+exit
+```
 
 ### Environment
 
