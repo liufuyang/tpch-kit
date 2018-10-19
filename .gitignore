@@ -2,3 +2,4 @@
 *.tbl
 dbgen/dbgen
 dbgen/qgen
+dbgen/tpch.sql

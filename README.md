@@ -69,6 +69,8 @@ ls *.tbl
 
 mysql -uroot -h 127.0.0.1 -P3306 -p1234  --local-infile < load_tbl_to_mysql.sql
 
+# Dump db for later use
+# mysqldump -uroot -p1234 -h 127.0.0.1 tpch > tpch.sql
 ```
 
 ### Run some SQL and check results
